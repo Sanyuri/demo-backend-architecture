@@ -16,21 +16,29 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         product.CreatedAt = DateTime.UtcNow;
         product.UpdatedAt = DateTime.UtcNow;
         //Calling the Add method of the productRepository
-        productRepository.Add(product);
+        productRepository.AddAsync(product);
     }
 
     public ProductDto? GetProductById(int id)
     {
         //Calling the GetById method of the productRepository
-        var product = productRepository.GetById(id);
+        var product = productRepository.GetByIdAsync(id);
         //Returning the product if it is not null, otherwise returning null
         return product == null ? null : mapper.Map<ProductDto>(product);
+    }
+    
+    public List<ProductDto> GetProductListByName(string name)
+    {
+        //Calling the GetAll method of the productRepository
+        var products = productRepository.GetByName(name).ToList();
+        //Mapping the list of products to a list of ProductDto
+        return mapper.Map<List<ProductDto>>(products);
     }
 
     public void UpdateProduct(int id, ProductDto productDto)
     {
         //Calling the GetById method of the productRepository
-        var product = productRepository.GetById(id);
+        var product = productRepository.GetByIdAsync(id).Result;
         //Returning if the product is null
         if(product == null)
         {
@@ -46,14 +54,6 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
 
     public void DeleteProduct(int id)
     {
-        //Calling the GetById method of the productRepository
-        var product = productRepository.GetById(id);
-        //Returning if the product is null
-        if(product == null)
-        {
-            return;
-        }
-        //Calling the Delete method of the productRepository
-        productRepository.Delete(product);
+        productRepository.DeleteById(id);
     }
 }

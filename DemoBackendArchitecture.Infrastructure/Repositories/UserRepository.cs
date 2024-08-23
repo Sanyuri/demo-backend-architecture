@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DemoBackendArchitecture.Infrastructure.Repositories;
 
-public class UserRepository(ApplicationDbContext context) : IUserRepository
+public class UserRepository(ApplicationDbContext context) : GenericRepository<User>(context), IUserRepository
 {
     public User? GetUserByEmail(string? userEmail)
     {

@@ -4,33 +4,47 @@ using DemoBackendArchitecture.Infrastructure.Data;
 
 namespace DemoBackendArchitecture.Infrastructure.Repositories;
 
-public class ProductRepository(ApplicationDbContext context) : IProductRepository
+public class ProductRepository(ApplicationDbContext context) : GenericRepository<Product>(context),IProductRepository
 {
     //inherit Interface of domain layer
-    public void Add(Product product)
+    public IEnumerable<Product> GetByName(string name)
     {
-        //Implement Add method
-        context.Add(product);
-        context.SaveChanges();
+        return context.Products.Where(p => p.Name!=null && p.Name.Contains(name));
+    }
+
+    public IQueryable<Product> Filter(IQueryable<Product> queryable, string name = "", decimal minPrice = 0, decimal maxPrice = Decimal.MaxValue,
+        int minStock = 0, int maxStock = Int32.MaxValue, string description = "")
+    {
+        //Filter by name
+        if (!string.IsNullOrEmpty(name))
+        {
+            queryable = queryable.Where(p => p.Name!=null && p.Name.Contains(name));
+        }
+        
+        //Filer price by minPrice and maxPrice
+        queryable = queryable.Where(p => p.Price >= minPrice && p.Price <= maxPrice);
+        
+        //Filter stock by minStock and maxStock
+        queryable = queryable.Where(p => p.Stock >= minStock && p.Stock <= maxStock);
+        
+        //Filter by description
+        if (!string.IsNullOrEmpty(description))
+        {
+            queryable = queryable.Where(p => p.Description!= null && p.Description.Contains(description));
+        }
+
+        return queryable;
     }
     
-    public Product? GetById(int id)
+    public IQueryable<Product> Sort(IQueryable<Product> queryable, string sortOrder)
     {
-        //Implement GetById method
-        return context.Products.Find(id);
-    }
+        //Sort by name
+        queryable = sortOrder switch
+        {
+            "name_desc" => queryable.OrderByDescending(p => p.Name),
+            _ => queryable.OrderBy(p => p.Name)
+        };
 
-    public void Update(Product product)
-    {
-        //Implement Update method
-        context.Products.Update(product);
-        context.SaveChanges();
-    }
-
-    public void Delete(Product product)
-    {
-        //Implement Delete method
-        context.Products.Remove(product);
-        context.SaveChanges();
+        return queryable;
     }
 }
