@@ -6,6 +6,7 @@ using DemoBackendArchitecture.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using NetCore.AutoRegisterDi;
 
 namespace DemoBackendArchitecture.Application.Services;
 

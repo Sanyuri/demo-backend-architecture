@@ -2,6 +2,6 @@
 
 namespace DemoBackendArchitecture.Domain.Interfaces;
 
-public interface IRoleRepository : IGenericRepository<Role>
+public interface IRoleRepository : IUnitOfWork<Role>
 {
 }

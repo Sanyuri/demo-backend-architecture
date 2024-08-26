@@ -1,6 +1,7 @@
 using DemoBackendArchitecture.Application.Common.Exception;
 using DemoBackendArchitecture.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
+using NetCore.AutoRegisterDi;
 
 namespace DemoBackendArchitecture.Application.Common.Utilities;
 

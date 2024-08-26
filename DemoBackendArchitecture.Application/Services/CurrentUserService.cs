@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using DemoBackendArchitecture.Application.Common.Interfaces;
+using NetCore.AutoRegisterDi;
 
 namespace DemoBackendArchitecture.Application.Services;
 

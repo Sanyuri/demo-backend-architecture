@@ -1,19 +1,17 @@
 ﻿using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
-using DemoBackendArchitecture.Application.Common.Interfaces;
+using DemoBackendArchitecture.Application;
 using DemoBackendArchitecture.Application.Common.Model.Product;
 using DemoBackendArchitecture.Application.Common.Model.User;
-using DemoBackendArchitecture.Application.Common.Utilities;
-using DemoBackendArchitecture.Application.Services;
 using DemoBackendArchitecture.Domain.Entities;
-using DemoBackendArchitecture.Domain.Interfaces;
+using DemoBackendArchitecture.Infrastructure;
 using DemoBackendArchitecture.Infrastructure.Data;
-using DemoBackendArchitecture.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NetCore.AutoRegisterDi;
 
 namespace DemoBackendArchitecture.API.Configs;
 
@@ -24,22 +22,24 @@ public static class ServiceExtensions
         // Register DbContext
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        // services.AddDbContextPool<CoreContextPooling>((serviceProvider, dbContextBuilder) =>
+        // {
+        //     var connectionString = connectionStringPlaceHolder?
+        //         .Replace("{dbName}",
+        //             ConfigurationConstant.DefaultDatabase
+        //         );
+				    //
+        //     dbContextBuilder.UseSqlServer(connectionString, options =>
+        //     {
+        //         options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+        //     });
+        // });
     }
 
     public static void ConfigureLayersServices(this IServiceCollection services, IConfiguration configuration)
     {
-
-        // Register services for Application layer
-        services.AddScoped<IAuthService, AuthService>();
-        // Register services for Infrastructure layer
-        services.AddScoped<IProductRepository, ProductRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
-        
-        // Register services for Web layer
-        services.AddSingleton<ICookieService, CookieService>();
-        services.AddSingleton<ITokenService, TokenService>();
-        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddApplicationServices();
+        services.AddRepositories();
     }
 
     public static void ConfigurePasswordHasher(this IServiceCollection services, IConfiguration configuration)

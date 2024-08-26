@@ -2,6 +2,6 @@
 
 namespace DemoBackendArchitecture.Domain.Interfaces;
 
-public interface IProductRepository : IGenericRepository<Product>
+public interface IProductRepository : IUnitOfWork<Product>
 {
 }

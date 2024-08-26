@@ -6,6 +6,7 @@ using DemoBackendArchitecture.Application.Common.Utilities;
 using DemoBackendArchitecture.Domain.Constants;
 using DemoBackendArchitecture.Domain.Entities;
 using DemoBackendArchitecture.Domain.Interfaces;
+using NetCore.AutoRegisterDi;
 
 namespace DemoBackendArchitecture.Application.Services;
 
@@ -19,7 +20,7 @@ public class AuthService(
     private readonly IUserRepository _userRepository = userRepository;
     private readonly ITokenService _tokenService = tokenService;
     private readonly ICurrentUserService _currentUser = currentUserService;
-    private ICookieService _cookieService = cookieService;
+    private readonly ICookieService _cookieService = cookieService;
     private readonly IMapper _mapper = mapper;
     public async Task<UserSignInResponse> SignIn(UserSignInRequest request)
     {

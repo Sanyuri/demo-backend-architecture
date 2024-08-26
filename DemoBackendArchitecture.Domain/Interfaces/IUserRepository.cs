@@ -2,7 +2,7 @@
 
 namespace DemoBackendArchitecture.Domain.Interfaces;
 
-public interface IUserRepository : IGenericRepository<User>
+public interface IUserRepository : IUnitOfWork<User>
 {
     Task<User> GetUserByEmailAsync(string email);
 }
