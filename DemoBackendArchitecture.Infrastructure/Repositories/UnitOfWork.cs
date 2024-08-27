@@ -6,6 +6,7 @@ using NetCore.AutoRegisterDi;
 
 namespace DemoBackendArchitecture.Infrastructure.Repositories;
 
+[RegisterAsScoped]
 public class UnitOfWork<T>(ApplicationDbContext context) : IUnitOfWork<T> where T : class
 {
     private readonly DbSet<T> _dbSet = context.Set<T>();

@@ -1,6 +1,7 @@
 using DemoBackendArchitecture.Application.Common.Interfaces;
 using DemoBackendArchitecture.Domain.Entities;
 using DemoBackendArchitecture.Domain.Interfaces;
+using NetCore.AutoRegisterDi;
 
 namespace DemoBackendArchitecture.Application.Services;
 

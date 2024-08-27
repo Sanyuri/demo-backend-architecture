@@ -2,16 +2,17 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using DemoBackendArchitecture.Application;
+using DemoBackendArchitecture.Application.Common.Model.Email;
 using DemoBackendArchitecture.Application.Common.Model.Product;
 using DemoBackendArchitecture.Application.Common.Model.User;
 using DemoBackendArchitecture.Domain.Entities;
-using DemoBackendArchitecture.Infrastructure;
+using DemoBackendArchitecture.Domain.Interfaces;
 using DemoBackendArchitecture.Infrastructure.Data;
+using DemoBackendArchitecture.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using NetCore.AutoRegisterDi;
 
 namespace DemoBackendArchitecture.API.Configs;
 
@@ -38,8 +39,13 @@ public static class ServiceExtensions
 
     public static void ConfigureLayersServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddApplicationServices();
-        services.AddRepositories();
+        // Add EmailService
+        services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
+        //Call the AddApplication method from ConfigurationExtend
+        ConfigurationExtend.ConfigureExtend(services, configuration);
+        // Register Repositories
+        services.AddTransient<IProductRepository, ProductRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
     }
 
     public static void ConfigurePasswordHasher(this IServiceCollection services, IConfiguration configuration)
