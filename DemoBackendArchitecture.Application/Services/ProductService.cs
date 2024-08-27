@@ -3,10 +3,11 @@ using DemoBackendArchitecture.Application.DTOs;
 using DemoBackendArchitecture.Application.Interfaces;
 using DemoBackendArchitecture.Domain.Entities;
 using DemoBackendArchitecture.Domain.Interfaces;
+using NetCore.AutoRegisterDi;
 
 namespace DemoBackendArchitecture.Application.Services;
 
-public class ProductService(IProductRepository productRepository, IMapper mapper) : IProductService
+public class ProductService(IProductRepository productRepository, IMapper mapper, IBackgroundJobService backgroundJobService) : IProductService
 {
     public void CreateProduct(ProductDto productDto)
     {
@@ -24,6 +25,9 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         //Calling the GetById method of the productRepository
         var product = productRepository.GetByIdAsync(id);
         //Returning the product if it is not null, otherwise returning null
+        
+        backgroundJobService.EnqueueJob(() => Console.WriteLine("Hello World!"));
+        
         return product == null ? null : mapper.Map<ProductDto>(product);
     }
     
@@ -55,5 +59,10 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
     public void DeleteProduct(int id)
     {
         productRepository.DeleteById(id);
+    }
+
+    public void AutoDisplayHelloWorld()
+    {
+        backgroundJobService.EnqueueJob(() => Console.WriteLine("Hello World!"));
     }
 }

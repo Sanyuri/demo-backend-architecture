@@ -6,4 +6,6 @@ public interface IUserRepository : IGenericRepository<User>
 {
     User? GetUserByEmail(string? userEmail);
     User Add(User user);
+    
+  
 }

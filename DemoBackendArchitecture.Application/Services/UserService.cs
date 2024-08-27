@@ -10,9 +10,11 @@ using DemoBackendArchitecture.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
+using NetCore.AutoRegisterDi;
 
 namespace DemoBackendArchitecture.Application.Services;
 
+[RegisterAsTransient]
 public class UserService(IUserRepository userRepository, IConfiguration configuration,IPasswordHasher<User> passwordHasher, IMapper mapper, IRoleService roleService) : IUserService
 {
     public string? Authenticate(UserDto userDto)

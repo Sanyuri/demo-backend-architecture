@@ -1,4 +1,6 @@
-﻿namespace DemoBackendArchitecture.API.Configs;
+﻿using Hangfire;
+
+namespace DemoBackendArchitecture.API.Configs;
 
 public static class ApplicationBuilderExtensions
 {
@@ -15,7 +17,12 @@ public static class ApplicationBuilderExtensions
         app.UseAuthentication();
         app.UseRouting();
         app.UseAuthorization();
-        app.UseEndpoints(endpoint => 
-            endpoint.MapControllers());
+        app.UseEndpoints(endpoint =>
+        {
+            endpoint.MapControllers();
+            endpoint.MapHangfireDashboard();
+        });
+
+        app.UseHangfireDashboard();
     }
 }

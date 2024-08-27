@@ -30,6 +30,7 @@ public class ProductController(IProductService productService, IMapper mapper) :
         //Calling the GetProductById method of the productService
         var product = productService.GetProductById(id);
         //Returning the product if it is not null, otherwise returning NotFound
+        
         return product == null? NotFound() : Ok(product);
     }
     
