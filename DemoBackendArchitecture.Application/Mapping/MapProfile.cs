@@ -7,10 +7,10 @@ namespace DemoBackendArchitecture.Application.Mapping;
 
 public class MapProfile : Profile
 {
+    
     public MapProfile()
     {
         CreateMap<Product, ProductDto>().ReverseMap();
-        
         CreateMap<User, UserSignInRequest>().ReverseMap();
         CreateMap<User, UserSignInResponse>().ReverseMap();
         CreateMap<User, UserSignUpRequest>().ReverseMap();

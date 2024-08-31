@@ -10,6 +10,7 @@ using NetCore.AutoRegisterDi;
 
 namespace DemoBackendArchitecture.Application.Services;
 
+[RegisterAsTransient]
 public class TokenService(IConfiguration configuration) : ITokenService
 {
     private readonly IConfiguration _configuration = configuration;

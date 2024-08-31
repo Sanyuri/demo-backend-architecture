@@ -1,4 +1,6 @@
-﻿namespace DemoBackendArchitecture.API.Configs;
+﻿using DemoBackendArchitecture.Application.Middlewares;
+
+namespace DemoBackendArchitecture.API.Configs;
 
 public static class ApplicationBuilderExtensions
 {
@@ -12,9 +14,12 @@ public static class ApplicationBuilderExtensions
         }
 
         app.UseHttpsRedirection();
-        app.UseAuthentication();
         app.UseRouting();
+        app.UseAuthentication();
         app.UseAuthorization();
+        //Register middleware
+        app.UseMiddleware<CsrfMiddleware>();
+        app.UseMiddleware<JwtMiddleware>();
         app.UseEndpoints(endpoint => 
             endpoint.MapControllers());
     }

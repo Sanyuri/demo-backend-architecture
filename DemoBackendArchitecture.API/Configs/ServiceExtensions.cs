@@ -22,8 +22,8 @@ public static class ServiceExtensions
     {
         // Register DbContext
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-        // services.AddDbContextPool<CoreContextPooling>((serviceProvider, dbContextBuilder) =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        // services.AddDbContextPool<ApplicationDbContext>((serviceProvider, dbContextBuilder) =>
         // {
         //     var connectionString = connectionStringPlaceHolder?
         //         .Replace("{dbName}",
@@ -44,7 +44,7 @@ public static class ServiceExtensions
         //Call the AddApplication method from ConfigurationExtend
         ConfigurationExtend.ConfigureExtend(services, configuration);
         // Register Repositories
-        services.AddTransient<IProductRepository, ProductRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
     }
 
@@ -103,5 +103,15 @@ public static class ServiceExtensions
         // Add Swagger
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+    }
+    
+    // configure middleware csrf
+    public static void ConfigureCsrf(this IServiceCollection services)
+    {
+        services.AddAntiforgery(options =>
+        {
+            options.Cookie.Name = "XSRF-TOKEN";
+            options.HeaderName = "X-CSRF-TOKEN";
+        });
     }
 }
