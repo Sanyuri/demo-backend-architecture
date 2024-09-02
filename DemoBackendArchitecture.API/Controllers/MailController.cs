@@ -1,5 +1,6 @@
 using DemoBackendArchitecture.Application.Common.Interfaces;
 using DemoBackendArchitecture.Application.Common.Model.Email;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoBackendArchitecture.API.Controllers;

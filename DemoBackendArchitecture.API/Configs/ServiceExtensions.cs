@@ -110,8 +110,9 @@ public static class ServiceExtensions
     {
         services.AddAntiforgery(options =>
         {
-            options.Cookie.Name = "XSRF-TOKEN";
             options.HeaderName = "X-CSRF-TOKEN";
+            options.Cookie.Name = "CSRF-TOKEN";
+            options.SuppressXFrameOptionsHeader = false;
         });
     }
 }

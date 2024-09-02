@@ -4,51 +4,41 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DemoBackendArchitecture.Application.Middlewares;
 
-public class CsrfMiddleware
+public class CsrfMiddleware(RequestDelegate next, IAntiforgery antiForgery)
 {
-    private readonly RequestDelegate _next;
-    private readonly IAntiforgery _antiForgery;
-
-    public CsrfMiddleware(RequestDelegate next, IAntiforgery antiForgery)
-    {
-        _next = next;
-        _antiForgery = antiForgery;
-    }
-    
+    private readonly RequestDelegate _next = next;
+    private readonly IAntiforgery _antiForgery = antiForgery;
     // Compare this snippet from DemoBackendArchitecture.Application/Middlewares/CsrfMiddleware.cs:
     public async Task InvokeAsync(HttpContext context)
     {
-        var endpoint = context.GetEndpoint();
-        if (endpoint != null)
+        // Check if the request is a state-changing HTTP method
+        if (HttpMethods.IsPost(context.Request.Method) || 
+            HttpMethods.IsPut(context.Request.Method) ||
+            HttpMethods.IsDelete(context.Request.Method))
         {
-            var ignoreAntiforgery = endpoint.Metadata.GetMetadata<IgnoreAntiforgeryTokenAttribute>();
-            if (ignoreAntiforgery != null)
+            //Get the endpoint information
+            var endpoint = context.GetEndpoint();
+            // Check if the endpoint is annotated with [IgnoreAntiForgeryToken]
+            if (endpoint?.Metadata?.GetMetadata<IgnoreAntiforgeryTokenAttribute>() != null)
             {
+                // Continue to the next middleware
                 await _next(context);
                 return;
             }
+            try
+            {
+                // Validate the CSRF token
+                await _antiForgery.ValidateRequestAsync(context);
+            }
+            catch (AntiforgeryValidationException)
+            {
+                // If validation fails, respond with 400 Bad Request or other appropriate status
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsync("Invalid CSRF token.");
+                return;
+            }
         }
-        
-        if (string.Equals(context.Request.Method, "GET", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(context.Request.Method, "HEAD", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(context.Request.Method, "OPTIONS", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(context.Request.Method, "TRACE", StringComparison.OrdinalIgnoreCase))
-        {
-            await _next(context);
-            return;
-        }
-        //Get token from cookie
-        var tokens = context.Request.Cookies["XSRF-TOKEN"];
-        //Get token from antiforgery service and validate it with the request token from the header
-        if (context.Request.Headers.TryGetValue("X-CSRF-TOKEN", out var token) &&
-            tokens == token)
-        {
-            await _next(context);
-        }
-        else
-        {
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            await context.Response.WriteAsync("CSRF token validation failed.");
-        }
+        // Continue to the next middleware
+        await _next(context);
     }
 }

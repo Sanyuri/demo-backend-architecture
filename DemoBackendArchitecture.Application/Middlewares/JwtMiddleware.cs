@@ -3,17 +3,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace DemoBackendArchitecture.Application.Middlewares;
 
-public class JwtMiddleware
+public class JwtMiddleware(RequestDelegate next, ITokenService tokenService)
 {
-    private readonly RequestDelegate _next;
-    private readonly ITokenService _tokenService;
-    
-    public JwtMiddleware(RequestDelegate next, ITokenService tokenService)
-    {
-        _next = next;
-        _tokenService = tokenService;
-    }
-    
+    private readonly RequestDelegate _next = next;
+    private readonly ITokenService _tokenService = tokenService;
     public async Task Invoke(HttpContext context)
     {
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();

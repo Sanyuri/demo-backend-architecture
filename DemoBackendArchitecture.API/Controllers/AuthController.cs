@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DemoBackendArchitecture.API.Controllers;
 
-
+[IgnoreAntiforgeryToken]
 public class AuthController(IAuthService authService) : BaseController
 {
     private readonly IAuthService _authService = authService;
     
     [HttpPost("login")]
-    [IgnoreAntiforgeryToken]
     public async Task<IActionResult> SignIn([FromBody] UserSignInRequest request) 
         => Ok(await _authService.SignIn(request));
     
