@@ -30,11 +30,11 @@ public class CsrfMiddleware(RequestDelegate next, IAntiforgery antiForgery)
                 // Validate the CSRF token
                 await _antiForgery.ValidateRequestAsync(context);
             }
-            catch (AntiforgeryValidationException)
+            catch (AntiforgeryValidationException exception)
             {
                 // If validation fails, respond with 400 Bad Request or other appropriate status
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsync("Invalid CSRF token.");
+                await context.Response.WriteAsync($"Invalid CSRF token.{exception.Message.ToString()}");
                 return;
             }
         }
