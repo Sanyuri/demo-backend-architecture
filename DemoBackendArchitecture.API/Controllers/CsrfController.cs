@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DemoBackendArchitecture.API.Controllers;
 
-public class CsrfController : BaseController
+public class CsrfController() : BaseController
 {
     [HttpGet("token")]
     public IActionResult GetToken([FromServices] IAntiforgery antiforgery)

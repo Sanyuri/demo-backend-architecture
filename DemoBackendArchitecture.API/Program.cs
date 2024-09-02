@@ -15,23 +15,6 @@ builder.Services.ConfigureCsrf();
 var app = builder.Build();
 
 //Configure middleware
-
-
-var antiForgery = app.Services.GetRequiredService<IAntiforgery>();
-
-app.Use((context, next) =>
-{
-    var requestPath = context.Request.Path.Value;
-
-    if (string.Equals(requestPath, "/", StringComparison.OrdinalIgnoreCase))
-    {
-        var tokenSet = antiForgery.GetAndStoreTokens(context);
-        context.Response.Cookies.Append("XSRF-TOKEN", tokenSet.RequestToken!,
-            new CookieOptions { HttpOnly = false });
-    }
-
-    return next(context);
-});
 app.ConfigureMiddleware(app.Environment);
 app.ConfigureCsrfMiddleware();
 //Run the application
