@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DemoBackendArchitecture.API.Controllers;
 
+[EnableCors("CorsPolicy")]
 public class MailController(IEmailService emailService) : BaseController
 {
     private readonly IEmailService _emailService = emailService;

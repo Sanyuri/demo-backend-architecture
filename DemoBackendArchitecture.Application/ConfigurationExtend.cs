@@ -6,7 +6,7 @@ namespace DemoBackendArchitecture.Application;
 
 public static class ConfigurationExtend
 {
-    public static void ConfigureExtend(IServiceCollection service, IConfiguration configuration)
+    public static void ConfigureExtend(IServiceCollection service)
     {
         service.RegisterAssemblyPublicNonGenericClasses()
             .Where(c => c.Name.EndsWith("Service"))

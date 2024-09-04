@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using DemoBackendArchitecture.Application;
 using DemoBackendArchitecture.Application.Common.Model.Email;
+using DemoBackendArchitecture.Application.Common.Model.Jwt;
 using DemoBackendArchitecture.Application.Common.Model.Product;
 using DemoBackendArchitecture.Application.Common.Model.User;
 using DemoBackendArchitecture.Domain.Entities;
@@ -42,7 +43,7 @@ public static class ServiceExtensions
         // Add EmailService
         services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
         //Call the AddApplication method from ConfigurationExtend
-        ConfigurationExtend.ConfigureExtend(services, configuration);
+        ConfigurationExtend.ConfigureExtend(services);
         // Register Repositories
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
@@ -66,6 +67,7 @@ public static class ServiceExtensions
 
     public static void ConfigureJwtBearer(this IServiceCollection services, IConfiguration configuration)
     {
+        var jwtSettings = configuration.GetSection("Jwt").Get<JwtSetting>();
         //Configure JwtBearer
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -76,10 +78,11 @@ public static class ServiceExtensions
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["Jwt:Issuer"],
-                    ValidAudience = configuration["Jwt:Audience"],
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
                     IssuerSigningKey =
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? string.Empty))
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
+                    ClockSkew = TimeSpan.Zero
                 };
             });
     }
@@ -113,6 +116,23 @@ public static class ServiceExtensions
             options.HeaderName = "X-CSRF-TOKEN";
             options.Cookie.Name = "CSRF-TOKEN";
             options.SuppressXFrameOptionsHeader = false;
+            options.Cookie.HttpOnly = false;
+        });
+    }
+    
+    /// <summary>
+    /// Configure cors
+    /// </summary>
+    public static void ConfigureCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy",
+                builder => builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed((host) => true)
+                    .AllowCredentials());
         });
     }
 }

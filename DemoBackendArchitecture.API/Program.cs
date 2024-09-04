@@ -11,6 +11,7 @@ builder.Services.ConfigureAutoMapper(builder.Configuration);
 builder.Services.ConfigureJwtBearer(builder.Configuration);
 builder.Services.ConfigureAuthorization(builder.Configuration);
 builder.Services.ConfigureCsrf();
+builder.Services.ConfigureCors();
 
 var app = builder.Build();
 
