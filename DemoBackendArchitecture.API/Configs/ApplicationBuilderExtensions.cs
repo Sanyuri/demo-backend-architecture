@@ -22,7 +22,8 @@ public static class ApplicationBuilderExtensions
             endpoint.MapControllers();
             endpoint.MapHangfireDashboard();
         });
-
+        
+        //Add HangfireDashBoard
         app.UseHangfireDashboard();
     }
 }

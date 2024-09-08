@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using DemoBackendArchitecture.Application.Interfaces;
 using Hangfire;
 
@@ -14,5 +14,6 @@ public class BackgroundJobService : IBackgroundJobService
     public void RecurringJob(Expression<Action> methodCall, string cronExpression, TimeZoneInfo timeZoneInfo = null, string queue = "default")
     {
         Hangfire.RecurringJob.AddOrUpdate(methodCall, cronExpression, timeZoneInfo, queue);
+        
     }
 }

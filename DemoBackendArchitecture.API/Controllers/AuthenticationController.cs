@@ -2,21 +2,30 @@
 using DemoBackendArchitecture.Application.DTOs;
 using DemoBackendArchitecture.Application.Interfaces;
 using DemoBackendArchitecture.Domain.Entities;
+using Finbuckle.MultiTenant;
+using Finbuckle.MultiTenant.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using LoginRequest = DemoBackendArchitecture.API.Models.AuthenticationRequest.LoginRequest;
 using RegisterRequest = DemoBackendArchitecture.API.Models.AuthenticationRequest.RegisterRequest;
+using TenantInfo = DemoBackendArchitecture.Infrastructure.Helpers.MultiTenancy.TenantInfo;
 
 namespace DemoBackendArchitecture.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthenticationController(IUserService userService, IMapper mapper) : ControllerBase
+public class AuthenticationController(IUserService userService, IMapper mapper, IBackgroundJobService backgroundJobService, IMultiTenantStore<TenantInfo> tenantStore) : ControllerBase
 {
     [HttpPost("login")]
     [ProducesResponseType<string>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult Login([FromBody] LoginRequest request)
     {
+        // backgroundJobService.EnqueueJob(() => Console.WriteLine("Hello from the background job"));
+        // backgroundJobService.RecurringJob(() => Console.WriteLine("Hello World"), "* * * * *", TimeZoneInfo.Local);
+
+        var tenantList = tenantStore.GetAllAsync();
+        Console.WriteLine(tenantList);
+        
         //Validate the request
         if (!ModelState.IsValid)
         {
